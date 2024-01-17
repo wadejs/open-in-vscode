@@ -1,0 +1,39 @@
+{
+  "name": "open-in-vscode",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@8.12.1",
+  "description": "A cli used to open in vscode at the specified path",
+  "license": "MIT",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "oc": "bin/oc.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "dev": "esno ./src/index.ts",
+    "build": "unbuild"
+  },
+  "dependencies": {
+    "@types/fuzzy-search": "^2.1.5",
+    "@types/prompts": "^2.4.9",
+    "@types/yargs": "^17.0.32",
+    "execa": "^8.0.1",
+    "fuzzy-search": "^3.2.1",
+    "prompts": "^2.4.2",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.6.0",
+    "@types/node": "^20.11.5",
+    "eslint": "^8.56.0",
+    "esno": "^4.0.0",
+    "typescript": "^5.3.3",
+    "unbuild": "^2.0.0"
+  }
+}
