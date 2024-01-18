@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  prompts@2.4.2:
+    hash: ts6r5abvsar6ixbusjvgk7wzue
+    path: patches/prompts@2.4.2.patch
+
 specifiers:
   '@antfu/eslint-config': ^2.6.0
   '@types/fuzzy-search': ^2.1.5
@@ -21,7 +26,7 @@ dependencies:
   '@types/yargs': 17.0.32
   execa: 8.0.1
   fuzzy-search: 3.2.1
-  prompts: 2.4.2
+  prompts: 2.4.2_ts6r5abvsar6ixbusjvgk7wzue
   yargs: 17.7.2
 
 devDependencies:
@@ -107,7 +112,7 @@ packages:
       local-pkg: 0.5.0
       parse-gitignore: 2.0.0
       picocolors: 1.0.0
-      prompts: 2.4.2
+      prompts: 2.4.2_ts6r5abvsar6ixbusjvgk7wzue
       toml-eslint-parser: 0.9.3
       vue-eslint-parser: 9.4.0_eslint@8.56.0
       yaml-eslint-parser: 1.2.2
@@ -3152,12 +3157,13 @@ packages:
     engines: {node: ^14.13.1 || >=16.0.0}
     dev: true
 
-  /prompts/2.4.2:
+  /prompts/2.4.2_ts6r5abvsar6ixbusjvgk7wzue:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
     engines: {node: '>= 6'}
     dependencies:
       kleur: 3.0.3
       sisteransi: 1.0.5
+    patched: true
 
   /punycode/2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}

@@ -35,5 +35,10 @@
     "esno": "^4.0.0",
     "typescript": "^5.3.3",
     "unbuild": "^2.0.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "prompts@2.4.2": "patches/prompts@2.4.2.patch"
+    }
   }
 }

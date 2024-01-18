@@ -1,0 +1,26 @@
+diff --git a/dist/prompts.js b/dist/prompts.js
+index 31f2648a7d215d61aff736424a6f2d66d07e3273..2b8a0ac36fd22ed17f6096ce4f52a4db95ba2633 100644
+--- a/dist/prompts.js
++++ b/dist/prompts.js
+@@ -14,7 +14,7 @@ function toPrompt(type, args, opts = {}) {
+     const onExit = opts.onExit || noop;
+     p.on('state', args.onState || noop);
+     p.on('submit', x => res(onSubmit(x)));
+-    p.on('exit', x => res(onExit(x)));
++    p.on('exit', x => rej(onExit(x)));
+     p.on('abort', x => rej(onAbort(x)));
+   });
+ }
+diff --git a/lib/prompts.js b/lib/prompts.js
+index 9f625564601da8f79040698de197a6ff2fec3859..e08923fc9f66ab0700788a62455da89ad23c5f35 100644
+--- a/lib/prompts.js
++++ b/lib/prompts.js
+@@ -11,7 +11,7 @@ function toPrompt(type, args, opts={}) {
+     const onExit = opts.onExit || noop;
+     p.on('state', args.onState || noop);
+     p.on('submit', x => res(onSubmit(x)));
+-    p.on('exit', x => res(onExit(x)));
++    p.on('exit', x => rej(onExit(x)));
+     p.on('abort', x => rej(onAbort(x)));
+   });
+ }
