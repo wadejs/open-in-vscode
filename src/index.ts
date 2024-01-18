@@ -108,6 +108,8 @@ import type { configType, folderListType, historyType } from './types';
       name: 'value',
       message: 'Please add the directory of your project collection！',
     })
+    if (!response || !response.value)
+      process.exit(0)
     folderList.push(response.value.trim())
     await setConfig(config)
     console.log('now you can run oc again to select the project you want to open')
@@ -132,6 +134,8 @@ import type { configType, folderListType, historyType } from './types';
         choices,
       },
     ])
+    if (!response || !response.value)
+      process.exit(0)
     const { value } = response
     const delIndex = folderList.findIndex((item) => {
       return item === value
