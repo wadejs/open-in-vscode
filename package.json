@@ -17,18 +17,20 @@
   "scripts": {
     "lint": "eslint .",
     "dev": "esno ./src/index.ts",
-    "build": "unbuild"
+    "build": "unbuild",
+    "test": "vitest"
   },
   "dependencies": {
-    "@types/fuzzy-search": "^2.1.5",
-    "@types/prompts": "^2.4.9",
-    "@types/yargs": "^17.0.32",
     "execa": "^8.0.1",
     "fuzzy-search": "^3.2.1",
     "prompts": "^2.4.2",
+    "vitest": "^1.2.1",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
+    "@types/fuzzy-search": "^2.1.5",
+    "@types/prompts": "^2.4.9",
+    "@types/yargs": "^17.0.32",
     "@antfu/eslint-config": "^2.6.0",
     "@types/node": "^20.11.5",
     "eslint": "^8.56.0",

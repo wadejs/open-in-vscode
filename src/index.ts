@@ -8,7 +8,7 @@ import FuzzySearch from 'fuzzy-search'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { version } from '../package.json'
-import type { configType, folderListType, historyType } from './types';
+import type { aliasConfigType, configType, directoryListType, historyType } from './types';
 
 (async () => {
   const bgGreen = '\x1B[42m%s\x1B[0m'
@@ -18,7 +18,8 @@ import type { configType, folderListType, historyType } from './types';
   const defaultRcPath = path.join(home || '~/', '.openvscoderc')
   let config: configType = {}
   let history: historyType = {}
-  let folderList: folderListType = []
+  let directoryList: directoryListType = []
+  let aliasConfig: aliasConfigType = {}
   try {
     const buffer = await readFile(defaultRcPath)
     const configStr = buffer.toString()
@@ -28,20 +29,21 @@ import type { configType, folderListType, historyType } from './types';
     writeFile(defaultRcPath, '')
   }
   history = config.history = config.history || {}
-  folderList = config.folderList = config.folderList || []
+  directoryList = config.directoryList = config.directoryList || []
+  aliasConfig = config.aliasConfig = config.aliasConfig || {}
 
   function setConfig(config: configType) {
     return writeFile(defaultRcPath, JSON.stringify(config))
   }
 
-  async function mian() {
-    if (!folderList.length)
+  async function pickDirectory() {
+    if (!directoryList.length)
       await add()
 
     const choices: Choice[] = []
 
     await Promise.all(
-      folderList
+      directoryList
         .filter((foldPath) => {
           if (!fs.existsSync(foldPath)) {
             console.log(colorRed, `${foldPath} does not exist`)
@@ -53,12 +55,12 @@ import type { configType, folderListType, historyType } from './types';
           const files = await readdir(foldPath)
           choices.push(
             ...files.map((file) => {
-              const folderPath = path.join(foldPath, file)
+              const directoryPath = path.join(foldPath, file)
               return {
                 title: file,
-                description: folderPath,
+                description: directoryPath,
                 value: {
-                  folderPath,
+                  directoryPath,
                   fileName: file,
                 },
               }
@@ -77,7 +79,7 @@ import type { configType, folderListType, historyType } from './types';
       {
         type: 'autocomplete',
         name: 'value',
-        message: 'which folder do you want to open with vscode?',
+        message: 'which directory do you want to open with vscode?',
         choices,
         suggest: (input) => {
           const res = searcher.search(input)
@@ -95,10 +97,15 @@ import type { configType, folderListType, historyType } from './types';
       process.exit(0)
 
     const { value } = response
-    const { folderPath } = value
-    execSync(`code ${folderPath}`)
-    console.log(bgGreen, `open ${folderPath} success`)
-    history[folderPath] = history[folderPath] ? history[folderPath]! + 1 : 1
+    const { directoryPath } = value
+    return Promise.resolve(directoryPath)
+  }
+
+  async function mian() {
+    const directoryPath = await pickDirectory()
+    execSync(`code ${directoryPath}`)
+    console.log(bgGreen, `open ${directoryPath} success`)
+    history[directoryPath] = history[directoryPath] ? history[directoryPath]! + 1 : 1
     setConfig(config)
   }
 
@@ -110,56 +117,85 @@ import type { configType, folderListType, historyType } from './types';
     })
     if (!response || !response.value)
       process.exit(0)
-    folderList.push(response.value.trim())
+    directoryList.push(response.value.trim())
     await setConfig(config)
     console.log('now you can run oc again to select the project you want to open')
   }
 
   async function del() {
-    if (!folderList.length) {
-      console.log('folderList is empty')
+    if (!directoryList.length) {
+      console.log('directoryList is empty')
       return
     }
-    const choices = folderList.map((folderPath) => {
+    const choices = directoryList.map((directoryPath) => {
       return {
-        title: folderPath,
-        value: folderPath,
+        title: directoryPath,
+        value: directoryPath,
       }
     })
     const response = await prompts([
       {
         type: 'select',
         name: 'value',
-        message: 'which folder do you want to delete?',
+        message: 'Which directory do you want to delete?',
         choices,
       },
     ])
     if (!response || !response.value)
       process.exit(0)
     const { value } = response
-    const delIndex = folderList.findIndex((item) => {
+    const delIndex = directoryList.findIndex((item) => {
       return item === value
     })
-    folderList.splice(delIndex, 1)
+    directoryList.splice(delIndex, 1)
+    setConfig(config)
+    console.log(bgGreen, `the directory [${value}] has been deleted`)
+  }
+
+  async function alias() {
+    const directoryPath = await pickDirectory()
+
+    const directoryAlias = await prompts({
+      type: 'text',
+      name: 'value',
+      message: `Please enter an alias for ---> ${directoryPath}`,
+    })
+    if (!directoryAlias || !directoryAlias.value)
+      process.exit(0)
+
+    aliasConfig[directoryAlias.value] = directoryPath
     setConfig(config)
   }
 
+  function openAlias(directoryPath: string) {
+    execSync(`code ${directoryPath}`)
+    console.log(bgGreen, `open ${directoryPath} success`)
+  }
   // eslint-disable-next-line no-unused-expressions
   yargs(hideBin(process.argv))
     .command(
       '*',
-      'open a folder with vscode',
+      'open a directory with vscode',
       () => {
       },
       async (argv) => {
-        if (argv._.length === 0)
+        if (argv._.length === 0) {
           mian()
+        }
+        else {
+          const alias = String(argv._[0])
+          const openPath = aliasConfig[alias]
+          openPath && openAlias(openPath)
+        }
       },
     )
-    .command('add [path]', 'add a folder to the folder list', () => {
+    .command('add', 'add a directory to the directory list', () => {
       add()
     })
-    .command('del', 'delete the useless path from the folderList', async () => {
+    .command('alias', 'add an alias for the specified directory', () => {
+      alias()
+    })
+    .command('del', 'delete the useless path from the directoryList', async () => {
       del()
     })
     .command('config', 'show config', () => {

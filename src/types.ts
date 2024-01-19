@@ -1,8 +1,12 @@
-export type folderListType = string[]
+export type directoryListType = string[]
 export interface configType {
-  folderList?: folderListType
+  directoryList?: directoryListType
   history?: historyType
+  aliasConfig?: aliasConfigType
 }
 export interface historyType {
   [key: string]: number | undefined
+}
+export interface aliasConfigType {
+  [key: string]: string | undefined
 }
