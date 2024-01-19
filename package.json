@@ -19,6 +19,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=14.15.0"
+  },
   "scripts": {
     "lint": "eslint .",
     "dev": "esno ./src/index.ts",

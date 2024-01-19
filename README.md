@@ -1,4 +1,4 @@
-<h1 align="center">open-in-vscode</h1>
+<h1>open-in-vscode<img src="https://img.shields.io/badge/node-%3E=14.15.0-blue" alt="node compatibility"></a></h1>
 <p align="center">A cli used to open in vscode at the specified path</p>
 
 ## Usage
