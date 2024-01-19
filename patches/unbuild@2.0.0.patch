@@ -1,0 +1,13 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index ce4e57edc8ab77c768647c385f52c9e9751b05c2..806900dbd33d6b2608106178608d316fcc2a05d1 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1053,7 +1053,7 @@ async function _build(rootDir, stub, inputConfig = {}, buildConfig, pkg, cleaned
+     entry.input = resolve(options.rootDir, entry.input);
+     entry.outDir = resolve(options.rootDir, entry.outDir || options.outDir);
+   }
+-  options.dependencies = Object.keys(pkg.dependencies || {});
++  // options.dependencies = Object.keys(pkg.dependencies || {});
+   options.peerDependencies = Object.keys(pkg.peerDependencies || {});
+   options.devDependencies = Object.keys(pkg.devDependencies || {});
+   options.externals.push(...options.dependencies, ...options.peerDependencies);
