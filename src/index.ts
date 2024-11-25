@@ -20,6 +20,7 @@ import type { aliasConfigType, configType, directoryListType, historyType } from
   let history: historyType = {}
   let directoryList: directoryListType = []
   let aliasConfig: aliasConfigType = {}
+  let execCommand: string = 'code'
   try {
     const buffer = await readFile(defaultRcPath)
     const configStr = buffer.toString()
@@ -31,6 +32,7 @@ import type { aliasConfigType, configType, directoryListType, historyType } from
   history = config.history = config.history || {}
   directoryList = config.directoryList = config.directoryList || []
   aliasConfig = config.aliasConfig = config.aliasConfig || {}
+  execCommand = config.execCommand = config.execCommand || 'code'
 
   function setConfig(config: configType) {
     return writeFile(defaultRcPath, JSON.stringify(config))
@@ -103,7 +105,7 @@ import type { aliasConfigType, configType, directoryListType, historyType } from
 
   async function mian() {
     const directoryPath = await pickDirectory()
-    execSync(`code ${directoryPath}`)
+    execSync(`${execCommand} ${directoryPath}`)
     console.log(bgGreen, `open ${directoryPath} success`)
     history[directoryPath] = history[directoryPath] ? history[directoryPath]! + 1 : 1
     setConfig(config)
@@ -167,8 +169,21 @@ import type { aliasConfigType, configType, directoryListType, historyType } from
     setConfig(config)
   }
 
+  async function opener() {
+    const opener = await prompts({
+      type: 'text',
+      name: 'value',
+      message: `Please enter an opener`,
+    })
+    if (!opener || !opener.value)
+      process.exit(0)
+    config.execCommand = opener.value
+    execCommand = opener.value
+    setConfig(config)
+  }
+
   function openAlias(directoryPath: string) {
-    execSync(`code ${directoryPath}`)
+    execSync(`${execCommand} ${directoryPath}`)
     console.log(bgGreen, `open ${directoryPath} success`)
   }
   // eslint-disable-next-line no-unused-expressions
@@ -197,6 +212,9 @@ import type { aliasConfigType, configType, directoryListType, historyType } from
     })
     .command('del', 'delete the useless path from the directoryList', async () => {
       del()
+    })
+    .command('opener', 'set the opener editor', async () => {
+      opener()
     })
     .command('config', 'show config', () => {
       const { history: _, ...restConfig } = config

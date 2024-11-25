@@ -3,6 +3,7 @@ export interface configType {
   directoryList?: directoryListType
   history?: historyType
   aliasConfig?: aliasConfigType
+  execCommand?: string
 }
 export interface historyType {
   [key: string]: number | undefined
